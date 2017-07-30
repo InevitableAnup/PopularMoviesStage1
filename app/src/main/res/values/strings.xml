@@ -3,4 +3,5 @@
     <string name="popular_movies">Popular</string>
     <string name="top_rated">Top Rated</string>
     <string name="noConnection">Please connect to the internet before continuing.</string>
+    <string name="api_key">0a3f73387e7920fd5d01ac61646f262c</string>
 </resources>

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, numberOfColumns()));
         adapter = new MovieArrayAdapter(MainActivity.this, movies);
 
-        getMovies();
+        getMovies(WebAPI.Popular_Movies);
     }
 
     private int numberOfColumns() {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (isNetworkAvailable()) {
                     adapter.clear();
-                    getSorted();
+                    getMovies(WebAPI.Popular_Movies);
 
                 } else {
                     Toast.makeText(this, R.string.noConnection, Toast.LENGTH_SHORT).show();
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_top_rated_movies:
                 if (isNetworkAvailable()) {
                     adapter.clear();
-                    getMovies();
+                    getMovies(WebAPI.TopRated_Movies);
                 } else {
                     Toast.makeText(this, R.string.noConnection, Toast.LENGTH_SHORT).show();
                 }
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getMovies() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.PopularMoviesURL, new Response.Listener<String>() {
+    public void getMovies(String webAPI) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, webAPI, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String resp = response.toString().trim();
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getSorted() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.TopRatedMoviesURL, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.TopRated_Movies, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String resp = response.toString().trim();
