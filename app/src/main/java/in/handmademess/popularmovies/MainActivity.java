@@ -2,6 +2,8 @@ package in.handmademess.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,11 +28,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import java.util.ArrayList;
 
 import in.handmademess.popularmovies.Parser.ParseMovies;
+import in.handmademess.popularmovies.adapter.FavoritesListAdapter;
 import in.handmademess.popularmovies.adapter.MovieArrayAdapter;
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,11 +46,23 @@ public class MainActivity extends AppCompatActivity {
     private GridLayoutManager mLayoutManager;
     ArrayList<MoviesInfo> moviesList;
     MovieArrayAdapter adapter;
+    FavoriteDbHelper favoriteDbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Stetho.initializeWithDefaults(this);
+        new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+
+        favoriteDbHelper = new FavoriteDbHelper(this);
+        String dbName =favoriteDbHelper.getDatabaseName();
+        Toast.makeText(this, dbName, Toast.LENGTH_SHORT).show();
+
 
         ArrayList<MoviesInfo> movies = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.movie_recyclerView);
@@ -103,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, R.string.noConnection, Toast.LENGTH_SHORT).show();
                 }
+                break;
+
+            case R.id.action_favorite_movies:
+                Intent favIntent = new Intent(this,FavoriteActivity.class);
+                startActivity(favIntent);
+
+                break;
+
 
 
         }
@@ -259,6 +285,8 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
+
+
 
 
 }

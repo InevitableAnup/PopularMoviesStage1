@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".FavoriteActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/movie_recyclerView"
+        android:id="@+id/fav_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
