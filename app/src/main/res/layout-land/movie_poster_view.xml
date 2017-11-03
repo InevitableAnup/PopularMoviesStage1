@@ -90,12 +90,15 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_min"
         tools:text="10\u00b0"/>
 
-    <ImageButton
+    <ToggleButton
         style="@style/Widget.AppCompat.Button.Borderless"
         android:id="@+id/bt_fav"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/ic_star"
+        android:background="@drawable/favorite_selector"
+        android:textColor="@android:color/white"
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintLeft_toLeftOf="@+id/tv_rating"
         app:layout_constraintRight_toRightOf="@+id/tv_rating"
         app:layout_constraintTop_toBottomOf="@+id/tv_rating"

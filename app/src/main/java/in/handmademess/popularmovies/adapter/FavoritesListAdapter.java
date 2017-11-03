@@ -69,10 +69,10 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int id = (int) holder.itemView.getTag();
+                int movie_id = (int) holder.itemView.getTag();
                 Toast.makeText(mContext, "Movie Tag : "+title, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mContext, DetailsActivity.class);
-                intent.putExtra("id", id);
+                intent.putExtra("movie_id", movie_id);
                 intent.putExtra("originalLng", originalLang);
                 intent.putExtra("title", title);
                 intent.putExtra("overview", overview);

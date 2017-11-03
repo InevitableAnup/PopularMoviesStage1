@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             int position = rv.getChildAdapterPosition(child);
                             MoviesInfo moviesInfo = moviesList.get(position);
                             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                            intent.putExtra("id", moviesInfo.getId());
+                            intent.putExtra("movie_id", moviesInfo.getId());
                             intent.putExtra("originalLng", moviesInfo.getOriginal_language());
                             intent.putExtra("title", moviesInfo.getOriginal_title());
                             intent.putExtra("overview", moviesInfo.getOverview());

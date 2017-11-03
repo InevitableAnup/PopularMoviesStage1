@@ -47,7 +47,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     TrailerArrayAdapter trailerArrayAdapter;
     ReviewArrayAdapter reviewArrayAdapter;
     LinearLayoutManager trailerLayoutManager,reviewLayoutManager;
-    int id;
+    int movie_id;
     ToggleButton bt_fav;
     private SQLiteDatabase mDb;
     FavoriteDbHelper favoriteDbHelper;
@@ -89,7 +89,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             originalLng = intent.getStringExtra("originalLng");
             poster = intent.getStringExtra("poster");
             rating = intent.getStringExtra("rating");
-            id = intent.getIntExtra("id",0);
+            movie_id = intent.getIntExtra("movie_id",0);
 
 
             releaseDt.setText(releaseDate);
@@ -110,6 +110,11 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private void setFavorites() {
         bt_fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -117,7 +122,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 if (isChecked)
                 {
                     Toast.makeText(DetailsActivity.this, "Add to favorite movies", Toast.LENGTH_SHORT).show();
-                    addToFavorites(title,overview,releaseDate,originalLng,poster,rating,id);
+                    addToFavorites(title,overview,releaseDate,originalLng,poster,rating,movie_id);
                 }else{
                     Toast.makeText(DetailsActivity.this, "Delete from favorite movies", Toast.LENGTH_SHORT).show();
                 }
@@ -161,7 +166,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     public void getTrailers()
     {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.MOVIES +id+"/videos?api_key=0a3f73387e7920fd5d01ac61646f262c&language=en-US", new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.MOVIES +movie_id+"/videos?api_key=0a3f73387e7920fd5d01ac61646f262c&language=en-US", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String resp = response.toString().trim();
@@ -230,7 +235,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     public void getReviews()
     {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.MOVIES +id+"/reviews?api_key=0a3f73387e7920fd5d01ac61646f262c&language=en-US", new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.MOVIES +movie_id+"/reviews?api_key=0a3f73387e7920fd5d01ac61646f262c&language=en-US", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String resp = response.toString().trim();
@@ -267,13 +272,5 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        int viewId = view.getId();
-        switch (viewId)
-        {
-            case R.id.iv_black:
-                finish();
-                break;
-
-        }
     }
 }

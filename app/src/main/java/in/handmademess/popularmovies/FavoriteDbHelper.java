@@ -58,7 +58,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE ID EXISTS " + TABLE_NAME);
+        sqLiteDatabase.execSQL("ALTER TABLE IF EXISTS " + TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
