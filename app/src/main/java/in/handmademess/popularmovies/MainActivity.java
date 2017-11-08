@@ -152,47 +152,37 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
 
                 recyclerView.setHasFixedSize(true);
-                recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                    GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
-
-                        @Override
-                        public boolean onSingleTapUp(MotionEvent e) {
-                            return true;
-                        }
-
-                    });
-
-                    @Override
-                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                        View child = rv.findChildViewUnder(e.getX(), e.getY());
-                        if (child != null && gestureDetector.onTouchEvent(e)) {
-                            int position = rv.getChildAdapterPosition(child);
-                            MoviesInfo moviesInfo = moviesList.get(position);
-                            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                            intent.putExtra("movie_id", moviesInfo.getId());
-                            intent.putExtra("originalLng", moviesInfo.getOriginal_language());
-                            intent.putExtra("title", moviesInfo.getOriginal_title());
-                            intent.putExtra("overview", moviesInfo.getOverview());
-                            intent.putExtra("popularity", moviesInfo.getPopularity());
-                            intent.putExtra("poster", moviesInfo.getPoster_path());
-                            intent.putExtra("releaseDate", moviesInfo.getRelease_date());
-                            intent.putExtra("rating", String.valueOf(moviesInfo.getVote_average()));
-                            startActivity(intent);
-                        }
-
-                        return false;
-                    }
-
-                    @Override
-                    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-                    }
-
-                    @Override
-                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                    }
-                });
+//                recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+//                    GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+//
+//                        @Override
+//                        public boolean onSingleTapUp(MotionEvent e) {
+//                            return true;
+//                        }
+//
+//                    });
+//
+//                    @Override
+//                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+//                        View child = rv.findChildViewUnder(e.getX(), e.getY());
+//                        if (child != null && gestureDetector.onTouchEvent(e)) {
+//                            int position = rv.getChildAdapterPosition(child);
+//
+//                        }
+//
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+//
+//                    }
+//                });
 
 
             }

@@ -28,6 +28,11 @@
             android:label="Favorite Movies"
             android:parentActivityName=".MainActivity"
             ></activity>
+        <provider
+            android:authorities="in.handmademess.popularmovies"
+            android:name="in.handmademess.popularmovies.PMContentProvider.MoviesContentProvider"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

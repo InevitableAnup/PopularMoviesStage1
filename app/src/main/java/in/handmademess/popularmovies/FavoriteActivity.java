@@ -2,21 +2,26 @@ package in.handmademess.popularmovies;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import in.handmademess.popularmovies.adapter.FavoritesListAdapter;
 
-public class FavoriteActivity extends AppCompatActivity {
-
+public class FavoriteActivity extends AppCompatActivity  {
+    private static final String TAG = FavoriteActivity.class.getSimpleName();
     private SQLiteDatabase mDb;
     FavoritesListAdapter favoritesListAdapter;
     FavoriteDbHelper favoriteDbHelper;
     RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
+    private static final int TASK_LOADER_ID = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +36,7 @@ public class FavoriteActivity extends AppCompatActivity {
         recyclerView.setAdapter(favoritesListAdapter);
 
         recyclerView.setHasFixedSize(true);
+
     }
 
     private int numberOfColumns() {
@@ -44,6 +50,8 @@ public class FavoriteActivity extends AppCompatActivity {
         return nColumns;
     }
 
+
+
     private Cursor getAllFavoriteMovies(){
         return mDb.query(
                 FavoritesContract.FavoriteListEntry.TABLE_NAME,
@@ -55,4 +63,5 @@ public class FavoriteActivity extends AppCompatActivity {
                 FavoritesContract.FavoriteListEntry.MOVIE_ID
         );
     }
+
 }

@@ -1,6 +1,7 @@
 package in.handmademess.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import in.handmademess.popularmovies.DetailsActivity;
+import in.handmademess.popularmovies.MainActivity;
 import in.handmademess.popularmovies.MoviesInfo;
 import in.handmademess.popularmovies.R;
 import in.handmademess.popularmovies.WebAPI;
@@ -62,6 +65,23 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieArrayAdapter.Vi
                 .placeholder(R.drawable.empty_gallery)
                 .error(R.drawable.error_img)
                 .into(posterImg);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MoviesInfo moviesInfo = itemList.get(listPosition);
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra("movie_id", moviesInfo.getId());
+                intent.putExtra("originalLng", moviesInfo.getOriginal_language());
+                intent.putExtra("title", moviesInfo.getOriginal_title());
+                intent.putExtra("overview", moviesInfo.getOverview());
+                intent.putExtra("popularity", moviesInfo.getPopularity());
+                intent.putExtra("poster", moviesInfo.getPoster_path());
+                intent.putExtra("releaseDate", moviesInfo.getRelease_date());
+                intent.putExtra("rating", String.valueOf(moviesInfo.getVote_average()));
+                context.startActivity(intent);
+            }
+        });
 
     }
 

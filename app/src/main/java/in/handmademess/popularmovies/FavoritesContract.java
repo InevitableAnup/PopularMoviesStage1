@@ -1,5 +1,6 @@
 package in.handmademess.popularmovies;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -7,8 +8,12 @@ import android.provider.BaseColumns;
  */
 
 public class FavoritesContract {
+    public static final String AUTHORITY ="in.handmademess.popularmovies";
+    public static final Uri BASE_CONTENT_URI =Uri.parse("content://"+AUTHORITY);
+    public static final String PATH_MOVIES ="favoritelist";
+    public static final class FavoriteListEntry implements BaseColumns{
 
-    public class FavoriteListEntry implements BaseColumns{
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MOVIES).build();
         public static final String TABLE_NAME ="favoritelist";
         public static final String MOVIE_ID ="id";//INTEGER
         public static final String TITLE="title";

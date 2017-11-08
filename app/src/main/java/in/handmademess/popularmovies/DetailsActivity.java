@@ -36,7 +36,7 @@ import in.handmademess.popularmovies.Parser.ParseTrailers;
 import in.handmademess.popularmovies.adapter.ReviewArrayAdapter;
 import in.handmademess.popularmovies.adapter.TrailerArrayAdapter;
 
-public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class DetailsActivity extends AppCompatActivity {
 
     String title,overview,releaseDate, originalLng,poster,rating;
     public TextView releaseDt, tvOverView, tvTitle, tvRating;
@@ -59,13 +59,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setElevation(0f);
         favoriteDbHelper = new FavoriteDbHelper(this);
         mDb = favoriteDbHelper.getWritableDatabase();
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        actionBar.setHomeButtonEnabled(true);
-//        actionBar.setCustomView(R.layout.actionbar_layout);
-//        TextView tv_movie_title = (TextView) findViewById(R.id.tv_movie_title);
-//        ImageButton iv_black = (ImageButton) findViewById(R.id.iv_black);
-//        iv_black.setOnClickListener(this);
 
 
         releaseDt = (TextView) findViewById(R.id.list_item_release_date);
@@ -110,10 +103,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     private void setFavorites() {
         bt_fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -130,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private long addToFavorites(String title, String overview, String releaseDate, String originalLng, String poster, String rating, int id) {
+    private void addToFavorites(String title, String overview, String releaseDate, String originalLng, String poster, String rating, int id) {
         ContentValues cv = new ContentValues();
         cv.put(FavoritesContract.FavoriteListEntry.MOVIE_ID,id);
         cv.put(FavoritesContract.FavoriteListEntry.TITLE,title);
@@ -143,7 +132,14 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         cv.put(FavoritesContract.FavoriteListEntry.POPULARARITY,rating);
         cv.put(FavoritesContract.FavoriteListEntry.ORIGINAL_TITLE,title);
 
-        return mDb.insert(FavoritesContract.FavoriteListEntry.TABLE_NAME,null,cv);
+        Uri uri =getContentResolver().insert(FavoritesContract.FavoriteListEntry.CONTENT_URI,cv);
+
+        if (uri!=null)
+        {
+            Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        //return mDb.insert(FavoritesContract.FavoriteListEntry.TABLE_NAME,null,cv);
 
     }
 
@@ -184,39 +180,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 trailerArrayAdapter = new TrailerArrayAdapter(DetailsActivity.this,trailerInfoArrayList);
                 trailerRecyclerView.setAdapter(trailerArrayAdapter);
                 trailerRecyclerView.setHasFixedSize(true);
-                trailerRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                    GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
-
-                        @Override
-                        public boolean onSingleTapUp(MotionEvent e) {
-                            return true;
-                        }
-
-                    });
-                    @Override
-                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                        View child = rv.findChildViewUnder(e.getX(), e.getY());
-                        if (child != null && gestureDetector.onTouchEvent(e)) {
-                            int position = rv.getChildAdapterPosition(child);
-
-                            TrailerInfo trailerInfo = trailerInfoArrayList.get(position);
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+trailerInfo.getKey())));
-
-                        }
-
-                        return false;
-                    }
-
-                    @Override
-                    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-                    }
-
-                    @Override
-                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                    }
-                });
             }
         }, new Response.ErrorListener() {
             @Override
@@ -269,8 +232,4 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-
-    @Override
-    public void onClick(View view) {
-    }
 }

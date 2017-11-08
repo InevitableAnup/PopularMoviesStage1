@@ -1,6 +1,8 @@
 package in.handmademess.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,13 @@ public class TrailerArrayAdapter extends RecyclerView.Adapter<TrailerArrayAdapte
     public void onBindViewHolder(final ViewHolder holder, final int listPosition) {
         TextView trailerName = holder.tvTrailerName;
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TrailerInfo trailerInfo = itemList.get(listPosition);
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v="+trailerInfo.getKey())));
+            }
+        });
 
         trailerName.setText(itemList.get(listPosition).getName());
 
