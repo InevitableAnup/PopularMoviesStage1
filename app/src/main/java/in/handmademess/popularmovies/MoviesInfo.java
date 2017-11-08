@@ -1,11 +1,13 @@
 package in.handmademess.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Anup on 18-07-2017.
  */
 
-public class MoviesInfo
-{
+public class MoviesInfo implements Parcelable {
     public int vote_count,id;
     public double vote_average,popularity;
     public String title,poster_path,original_language,original_title,overview,release_date;
@@ -90,4 +92,51 @@ public class MoviesInfo
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.vote_count);
+        dest.writeInt(this.id);
+        dest.writeDouble(this.vote_average);
+        dest.writeDouble(this.popularity);
+        dest.writeString(this.title);
+        dest.writeString(this.poster_path);
+        dest.writeString(this.original_language);
+        dest.writeString(this.original_title);
+        dest.writeString(this.overview);
+        dest.writeString(this.release_date);
+    }
+
+    public MoviesInfo() {
+    }
+
+    protected MoviesInfo(Parcel in) {
+        this.vote_count = in.readInt();
+        this.id = in.readInt();
+        this.vote_average = in.readDouble();
+        this.popularity = in.readDouble();
+        this.title = in.readString();
+        this.poster_path = in.readString();
+        this.original_language = in.readString();
+        this.original_title = in.readString();
+        this.overview = in.readString();
+        this.release_date = in.readString();
+    }
+
+    public static final Parcelable.Creator<MoviesInfo> CREATOR = new Parcelable.Creator<MoviesInfo>() {
+        @Override
+        public MoviesInfo createFromParcel(Parcel source) {
+            return new MoviesInfo(source);
+        }
+
+        @Override
+        public MoviesInfo[] newArray(int size) {
+            return new MoviesInfo[size];
+        }
+    };
 }

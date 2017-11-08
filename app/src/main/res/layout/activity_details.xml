@@ -5,6 +5,7 @@
     android:id="@+id/parentSV"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_details"
@@ -12,22 +13,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context="in.handmademess.popularmovies.DetailsActivity">
-       <include
-           layout="@layout/movie_poster_view"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           />
+
+        <include
+            layout="@layout/movie_poster_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#979797"/>
+            android:background="#979797" />
 
         <TextView
-            android:layout_margin="16dp"
             android:id="@+id/trailer_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:gravity="center"
             android:text="Trailers:"
             android:textStyle="bold" />
@@ -35,9 +36,9 @@
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nested_first_child"
-            android:layout_margin="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:layout_marginTop="16dp">
 
             <android.support.v7.widget.RecyclerView
@@ -48,10 +49,10 @@
         </android.support.v4.widget.NestedScrollView>
 
         <TextView
-            android:layout_margin="16dp"
             android:id="@+id/review_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:gravity="center"
             android:text="Reviews:"
             android:textStyle="bold" />
@@ -59,9 +60,9 @@
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nested_second_child"
-            android:layout_margin="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:layout_marginTop="16dp">
 
             <android.support.v7.widget.RecyclerView
@@ -70,7 +71,6 @@
                 android:layout_height="match_parent"
                 android:scrollbars="vertical" />
         </android.support.v4.widget.NestedScrollView>
-
 
 
     </LinearLayout>

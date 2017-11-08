@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<MoviesInfo> moviesList;
     MovieArrayAdapter adapter;
     FavoriteDbHelper favoriteDbHelper;
+    Parcelable mListState;
 
+    String ApiKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         favoriteDbHelper = new FavoriteDbHelper(this);
-        String dbName =favoriteDbHelper.getDatabaseName();
+        String dbName = favoriteDbHelper.getDatabaseName();
         Toast.makeText(this, dbName, Toast.LENGTH_SHORT).show();
 
+       ApiKey= this.getString(R.string.api_key);
 
         ArrayList<MoviesInfo> movies = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.movie_recyclerView);
@@ -70,7 +74,33 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, numberOfColumns()));
         adapter = new MovieArrayAdapter(MainActivity.this, movies);
 
-        getMovies(WebAPI.Popular_Movies);
+        getMovies(WebAPI.Popular_Movies+ApiKey);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save list state
+        mListState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable("popular_key", mListState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Retrieve list state and list/item positions
+        if(savedInstanceState != null)
+            mListState = savedInstanceState.getParcelable("popular_key");
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
+        }
     }
 
     private int numberOfColumns() {
@@ -83,6 +113,13 @@ public class MainActivity extends AppCompatActivity {
         if (nColumns < 2) return 2;
         return nColumns;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -106,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (isNetworkAvailable()) {
                     adapter.clear();
+
                     getMovies(WebAPI.Popular_Movies);
 
                 } else {
@@ -124,11 +162,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.action_favorite_movies:
-                Intent favIntent = new Intent(this,FavoriteActivity.class);
+                Intent favIntent = new Intent(this, FavoriteActivity.class);
                 startActivity(favIntent);
 
                 break;
-
 
 
         }
@@ -152,37 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
 
                 recyclerView.setHasFixedSize(true);
-//                recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//                    GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
-//
-//                        @Override
-//                        public boolean onSingleTapUp(MotionEvent e) {
-//                            return true;
-//                        }
-//
-//                    });
-//
-//                    @Override
-//                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-//                        View child = rv.findChildViewUnder(e.getX(), e.getY());
-//                        if (child != null && gestureDetector.onTouchEvent(e)) {
-//                            int position = rv.getChildAdapterPosition(child);
-//
-//                        }
-//
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//
-//                    }
-//                });
+
 
 
             }
@@ -199,83 +206,6 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
-
-    public void getSorted() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, WebAPI.TopRated_Movies, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                String resp = response.toString().trim();
-                Log.d("Sorted RESP", resp);
-
-                ParseMovies parseMovies = new ParseMovies(resp);
-                parseMovies.parseJSON();
-
-                moviesList = parseMovies.prepareMovies();
-
-
-                MovieArrayAdapter adapter = new MovieArrayAdapter(MainActivity.this, moviesList);
-                recyclerView.setAdapter(adapter);
-
-                recyclerView.setHasFixedSize(true);
-                recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                    GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
-
-                        @Override
-                        public boolean onSingleTapUp(MotionEvent e) {
-                            return true;
-                        }
-
-                    });
-
-                    @Override
-                    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                        View child = rv.findChildViewUnder(e.getX(), e.getY());
-                        if (child != null && gestureDetector.onTouchEvent(e)) {
-                            int position = rv.getChildAdapterPosition(child);
-                            MoviesInfo moviesInfo = moviesList.get(position);
-                            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                            intent.putExtra("id", moviesInfo.getId());
-                            intent.putExtra("originalLng", moviesInfo.getOriginal_language());
-                            intent.putExtra("title", moviesInfo.getOriginal_title());
-                            intent.putExtra("overview", moviesInfo.getOverview());
-                            intent.putExtra("popularity", moviesInfo.getPopularity());
-                            intent.putExtra("poster", moviesInfo.getPoster_path());
-                            intent.putExtra("releaseDate", moviesInfo.getRelease_date());
-                            intent.putExtra("rating", String.valueOf(moviesInfo.getVote_average()));
-                            startActivity(intent);
-                        }
-
-                        return false;
-                    }
-
-                    @Override
-                    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-                    }
-
-                    @Override
-                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                    }
-                });
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                if (error instanceof NoConnectionError) {
-                    Toast.makeText(MainActivity.this, R.string.noConnection, Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
 
 
 
