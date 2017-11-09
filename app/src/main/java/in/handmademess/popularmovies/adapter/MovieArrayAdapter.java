@@ -85,17 +85,10 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieArrayAdapter.Vi
 
     }
 
-    public void clear() {
+    public void clear(){
         int size = this.itemList.size();
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                this.itemList.remove(0);
-            }
-
-            this.notifyItemRangeRemoved(0, size);
-        }
+        this.notifyItemRangeRemoved(0,size);
     }
-
 
     // Static inner class to initialize the views of rows
     static class ViewHolder extends RecyclerView.ViewHolder {

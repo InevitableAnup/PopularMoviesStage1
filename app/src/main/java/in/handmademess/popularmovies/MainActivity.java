@@ -41,22 +41,24 @@ import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
-    GridView moviesGrid;
-
     RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
-    ArrayList<MoviesInfo> moviesList;
+
     MovieArrayAdapter adapter;
     FavoriteDbHelper favoriteDbHelper;
-    Parcelable mListState;
 
     String ApiKey;
+    ArrayList<MoviesInfo> movies;
+
+    Bundle restoreState = new Bundle();
+    ParseMovies parseMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        restoreState = savedInstanceState;
         Stetho.initializeWithDefaults(this);
         new OkHttpClient.Builder()
                 .addNetworkInterceptor(new StethoInterceptor())
@@ -68,39 +70,20 @@ public class MainActivity extends AppCompatActivity {
 
        ApiKey= this.getString(R.string.api_key);
 
-        ArrayList<MoviesInfo> movies = new ArrayList<>();
+        movies = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.movie_recyclerView);
         mLayoutManager = new GridLayoutManager(MainActivity.this, numberOfColumns());
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, numberOfColumns()));
         adapter = new MovieArrayAdapter(MainActivity.this, movies);
 
-        getMovies(WebAPI.Popular_Movies+ApiKey);
+        getMovies(WebAPI.Popular_Movies+ApiKey,savedInstanceState);
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("popular_key",movies);
         super.onSaveInstanceState(outState);
-        // Save list state
-        mListState = mLayoutManager.onSaveInstanceState();
-        outState.putParcelable("popular_key", mListState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // Retrieve list state and list/item positions
-        if(savedInstanceState != null)
-            mListState = savedInstanceState.getParcelable("popular_key");
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (mListState != null) {
-            mLayoutManager.onRestoreInstanceState(mListState);
-        }
     }
 
     private int numberOfColumns() {
@@ -114,11 +97,6 @@ public class MainActivity extends AppCompatActivity {
         return nColumns;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
 
 
     private boolean isNetworkAvailable() {
@@ -143,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (isNetworkAvailable()) {
                     adapter.clear();
-
-                    getMovies(WebAPI.Popular_Movies);
+                    getMovies(WebAPI.Popular_Movies+ApiKey,restoreState);
 
                 } else {
                     Toast.makeText(this, R.string.noConnection, Toast.LENGTH_SHORT).show();
@@ -155,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_top_rated_movies:
                 if (isNetworkAvailable()) {
                     adapter.clear();
-                    getMovies(WebAPI.TopRated_Movies);
+                    getMovies(WebAPI.TopRated_Movies+ApiKey,restoreState);
                 } else {
                     Toast.makeText(this, R.string.noConnection, Toast.LENGTH_SHORT).show();
                 }
@@ -172,20 +149,25 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getMovies(String webAPI) {
+    public void getMovies(String webAPI, final Bundle savedInstanceState) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, webAPI, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String resp = response.toString().trim();
                 Log.d("RESP", resp);
 
-                ParseMovies parseMovies = new ParseMovies(resp);
+                parseMovies = new ParseMovies(resp);
                 parseMovies.parseJSON();
 
-                moviesList = parseMovies.prepareMovies();
+                if (savedInstanceState == null || !savedInstanceState.containsKey("popular_key"))
+                {
+                    movies = parseMovies.prepareMovies();
+                }else{
+                    movies = savedInstanceState.getParcelableArrayList("popular_key");
+                }
 
 
-                adapter = new MovieArrayAdapter(MainActivity.this, moviesList);
+                adapter = new MovieArrayAdapter(MainActivity.this, movies);
                 recyclerView.setAdapter(adapter);
 
                 recyclerView.setHasFixedSize(true);
